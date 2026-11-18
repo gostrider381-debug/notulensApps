@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notulensi Rapat Studio Pro</title>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #111827;
+      --bg-input: #1f2937;
+      --border-color: #1f2937;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-blue: #0ea5e9;
+      --accent-blue-hover: #0284c7;
+      --accent-cyan: #06b6d4;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 0.9rem;
+    }
+
+    /* Top Navbar */
+    .app-header {
+      background-color: #090d16;
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    /* Top Action Buttons */
+    .btn-export-txt { background-color: #1f2937; color: #fbbf24; border: 1px solid #374151; }
+    .btn-export-doc { background-color: #1e3a8a; color: #60a5fa; border: 1px solid #1e40af; }
+    .btn-export-pdf { background-color: #881337; color: #f43f5e; border: 1px solid #9f1239; }
+    .btn-copy { background-color: #064e3b; color: #34d399; border: 1px solid #065f46; }
+    .btn-action-top { border-radius: 6px; font-size: 0.8rem; font-weight: 500; padding: 6px 12px; }
+    .btn-action-top:hover { opacity: 0.9; }
+
+    /* Cards */
+    .card-dark {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+    }
+
+    .card-title-header {
+      font-size: 0.95rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Inputs */
+    .form-control-dark {
+      background-color: var(--bg-input);
+      border: 1px solid #374151;
+      color: var(--text-main);
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+
+    .form-control-dark:focus {
+      background-color: var(--bg-input);
+      border-color: var(--accent-blue);
+      color: var(--text-main);
+      box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.2);
+    }
+
+    .form-control-dark::placeholder { color: #6b7280; }
+
+    /* Record Timer Box */
+    .timer-display {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #ffffff;
+      font-family: monospace;
+    }
+
+    /* Speaker Pill Badge */
+    .speaker-pill {
+      background-color: #1f2937;
+      border: 1px solid #374151;
+      color: #d1d5db;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .speaker-pill.active {
+      background-color: #0284c7;
+      border-color: #38bdf8;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .speaker-avatar {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: #3b82f6;
+      color: #fff;
+      font-size: 0.65rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* Transcript Feed */
+    .transcript-container {
+      min-height: 380px;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .transcript-card {
+      background-color: #161e2e;
+      border: 1px solid #1f2937;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .transcript-speaker-name {
+      color: #38bdf8;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .transcript-time {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .transcript-text {
+      color: #e5e7eb;
+      margin-top: 4px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar Header -->
+  <header class="app-header d-flex flex-wrap justify-content-between align-items-center">
+    <div class="d-flex align-items-center gap-3">
+      <div class="brand-icon">
+        <i class="fas fa-microphone"></i>
+      </div>
+      <div>
+        <h1 class="h6 mb-0 fw-bold text-white">Notulensi Rapat Studio Pro</h1>
+        <span class="text-muted" style="font-size: 0.75rem;">Perekam Suara & Transkripsi Real-Time Otomatis</span>
+      </div>
+    </div>
+
+    <!-- Top Action Buttons -->
+    <div class="d-flex align-items-center gap-2 mt-2 mt-md-0">
+      <button class="btn btn-action-top btn-export-txt" onclick="exportToTxt()"><i class="fas fa-file-alt me-1"></i> TXT</button>
+      <button class="btn btn-action-top btn-export-doc" onclick="exportToWord()"><i class="fas fa-file-word me-1"></i> DOCX</button>
+      <button class="btn btn-action-top btn-export-pdf" onclick="window.print()"><i class="fas fa-print me-1"></i> PDF</button>
+      <button class="btn btn-action-top btn-copy" onclick="copyTranscript()"><i class="fas fa-copy me-1"></i> Salin</button>
+      <button class="btn btn-action-top text-muted" onclick="clearTranscript()" title="Reset"><i class="fas fa-undo"></i></button>
+    </div>
+  </header>
+
+  <!-- Main Dashboard Container -->
+  <div class="container-fluid p-4">
+    <div class="row g-3">
+      
+      <!-- KOLOM KIRI: Control & Speaker Pills -->
+      <div class="col-lg-3">
+        
+        <!-- Card Kontrol Suara -->
+        <div class="card card-dark p-3 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="card-title-header text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 1px;">KONTROL SUARA</span>
+            <span id="statusBadge" class="badge bg-secondary rounded-pill px-2 py-1" style="font-size: 0.7rem;">● Siap</span>
+          </div>
+
+          <div class="text-center py-3">
+            <div id="timerDisplay" class="timer-display">00:00:00</div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button id="btnStart" class="btn btn-info text-white fw-semibold flex-grow-1" style="background: linear-gradient(135deg, #0284c7, #06b6d4); border:none;" onclick="startRecording()">
+              <i class="fas fa-microphone me-2"></i>Mulai Rekam
+            </button>
+            <button id="btnStop" class="btn btn-danger text-white fw-semibold flex-grow-1 d-none" onclick="stopRecording()">
+              <i class="fas fa-stop me-2"></i>Hentikan
+            </button>
+          </div>
+        </div>
+
+        <!-- Card Peserta & Pembicara -->
+        <div class="card card-dark p-3">
+          <span class="card-title-header text-white mb-1"><i class="fas fa-users text-info"></i> Peserta & Pembicara</span>
+          <span class="text-muted mb-3" style="font-size: 0.75rem;">Klik nama peserta yang sedang berbicara</span>
+
+          <div class="input-group mb-3">
+            <input type="text" id="participantInput" class="form-control form-control-dark" placeholder="+ Tambah nama peserta..." onkeypress="handleParticipantKey(event)">
+            <button class="btn btn-outline-secondary text-info border-secondary" type="button" onclick="addParticipant()"><i class="fas fa-plus"></i></button>
+          </div>
+
+          <div id="speakerButtonsContainer" class="d-flex flex-wrap gap-2 mb-4">
+            <button type="button" class="speaker-pill active" onclick="setActiveSpeaker('Budi (Host)')">
+              <span class="speaker-avatar">B</span> Budi (Host)
+            </button>
+          </div>
+
+          <div class="border-top border-secondary pt-3 d-flex justify-content-between align-items-center">
+            <span class="text-muted" style="font-size: 0.8rem;">Pembicara Aktif:</span>
+            <span id="currentSpeakerDisplay" class="badge bg-info text-dark font-monospace">Budi (Host)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- KOLOM TENGAH: Transkrip Real-Time Feed -->
+      <div class="col-lg-5">
+        <div class="card card-dark p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <span class="card-title-header text-white"><i class="fas fa-comment-alt text-info"></i> Transkrip Real-Time</span>
+              <span id="entryCount" class="text-muted d-block" style="font-size: 0.75rem;">0 Entri</span>
+            </div>
+            
+            <!-- Live Filter/Search -->
+            <div style="width: 180px;">
+              <input type="text" id="searchInput" class="form-control form-control-dark py-1 px-2" placeholder="🔍 Cari dalam ucapan..." oninput="renderTranscriptBox()">
+            </div>
+          </div>
+
+          <!-- Transcript Stream Box -->
+          <div id="transcriptBox" class="transcript-container">
+            <div class="text-center text-muted py-5">
+              <i class="fas fa-microphone-slash fs-3 d-block mb-2 opacity-25"></i>
+              Belum ada percakapan. Klik tombol Mulai Rekam untuk mendengarkan.
+            </div>
+          </div>
+
+          <!-- Quick Manual Input -->
+          <div class="input-group mt-3">
+            <input type="text" id="manualInput" class="form-control form-control-dark" placeholder="Ketik catatan/kalimat manual..." onkeypress="handleManualKey(event)">
+            <button class="btn btn-info text-white font-medium" type="button" onclick="addManualEntry()">Tambah</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KOLOM KANAN: Detail, Agenda, Keputusan & Action Items -->
+      <div class="col-lg-4">
+        
+        <!-- Detail & Agenda -->
+        <div class="card card-dark p-3 mb-3">
+          <span class="card-title-header text-white mb-3"><i class="fas fa-clipboard-list text-info"></i> Detail & Agenda Rapat</span>
+          
+          <div class="mb-2">
+            <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">Topik Rapat / Judul</label>
+            <input type="text" id="meetingTitle" class="form-control form-control-dark" placeholder="Rapat Koordinasi Tim">
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">Tanggal</label>
+              <input type="date" id="meetingDate" class="form-control form-control-dark">
+            </div>
+            <div class="col-6">
+              <label class="form-label text-muted mb-1" style="font-size: 0.75rem;">Lokasi / Ruang</label>
+              <input type="text" id="meetingLocation" class="form-control form-control-dark" placeholder="Ruang Utama / Zoom">
+            </div>
+          </div>
+        </div>
+
+        <!-- Poin Keputusan -->
+        <div class="card card-dark p-3 mb-3">
+          <span class="card-title-header text-white mb-2"><i class="fas fa-bookmark text-warning"></i> Poin Keputusan / Ringkasan</span>
+          <textarea id="meetingNotes" class="form-control form-control-dark" rows="4" placeholder="Tuliskan kesimpulan ringkas atau poin utama hasil keputusan rapat di sini..."></textarea>
+        </div>
+
+        <!-- Action Items -->
+        <div class="card card-dark p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="card-title-header text-white"><i class="fas fa-check-circle text-success"></i> Action Items (Tindak Lanjut)</span>
+            <span id="taskCount" class="text-muted" style="font-size: 0.75rem;">0 Tugas</span>
+          </div>
+
+          <div class="input-group mb-2">
+            <input type="text" id="taskInput" class="form-control form-control-dark" placeholder="Tambah penugasan..." onkeypress="handleTaskKey(event)">
+            <button class="btn btn-outline-secondary text-success border-secondary" type="button" onclick="addTask()"><i class="fas fa-plus"></i></button>
+          </div>
+
+          <div id="taskList" class="py-2">
+            <div class="text-center text-muted fst-italic py-3" style="font-size: 0.8rem;">Belum ada action item.</div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JavaScript Logika Aplikasi -->
+  <script>
+    let recognition;
+    let transcriptEntries = []; 
+    let actionItems = [];
+    let currentInterim = '';
+    let isRecording = false;
+    let activeSpeaker = 'Budi (Host)';
+    let participantsArray = ['Budi (Host)', 'Siti (Notulis)', 'Andi'];
+    let timerInterval;
+    let secondsElapsed = 0;
+
+    // Set Default Date
+    document.getElementById('meetingDate').valueAsDate = new Date();
+
+    // Timer Function
+    function startTimer() {
+      secondsElapsed = 0;
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const hrs = String(Math.floor(secondsElapsed / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((secondsElapsed % 3600) / 60)).padStart(2, '0');
+        const secs = String(secondsElapsed % 60).padStart(2, '0');
+        document.getElementById('timerDisplay').textContent = `${hrs}:${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+    }
+
+    // Participants Management
+    function addParticipant() {
+      const input = document.getElementById('participantInput');
+      const name = input.value.trim();
+      if (name && !participantsArray.includes(name)) {
+        participantsArray.push(name);
+        input.value = '';
+        updateSpeakerButtons();
+      }
+    }
+
+    function handleParticipantKey(e) { if (e.key === 'Enter') addParticipant(); }
+
+    function removeParticipant(name) {
+      participantsArray = participantsArray.filter(p => p !== name);
+      if (activeSpeaker === name && participantsArray.length > 0) {
+        setActiveSpeaker(participantsArray[0]);
+      }
+      updateSpeakerButtons();
+    }
+
+    function updateSpeakerButtons() {
+      const container = document.getElementById('speakerButtonsContainer');
+      container.innerHTML = '';
+
+      participantsArray.forEach(name => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = name === activeSpeaker ? 'speaker-pill active' : 'speaker-pill';
+        
+        const initial = name.charAt(0).toUpperCase();
+        btn.innerHTML = `<span class="speaker-avatar">${initial}</span> ${name} <i class="fas fa-times ms-1 opacity-50" onclick="event.stopPropagation(); removeParticipant('${name}')"></i>`;
+        
+        btn.onclick = function() { setActiveSpeaker(name); };
+        container.appendChild(btn);
+      });
+    }
+
+    function setActiveSpeaker(name) {
+      activeSpeaker = name;
+      document.getElementById('currentSpeakerDisplay').textContent = name;
+      updateSpeakerButtons();
+    }
+
+    // Speech Recognition API
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'id-ID';
+
+      recognition.onresult = function(event) {
+        let interimTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            const text = event.results[i][0].transcript.trim();
+            const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            if (text) {
+              const lastEntry = transcriptEntries[transcriptEntries.length - 1];
+              // Jika orang yang sama berbicara, sambung teksnya di baris yang sama. 
+              // Jika berganti pembicara, otomatis membuat baris/kartu baru di bawahnya.
+              if (lastEntry && lastEntry.speaker === activeSpeaker) {
+                lastEntry.text += ' ' + text;
+              } else {
+                transcriptEntries.push({ speaker: activeSpeaker, time: timeNow, text: text });
+              }
+            }
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        currentInterim = interimTranscript;
+        renderTranscriptBox();
+      };
+
+      recognition.onend = function() {
+        if (isRecording) { try { recognition.start(); } catch(e){} }
+      };
+    }
+
+    function renderTranscriptBox() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      let htmlContent = '';
+      
+      const filtered = transcriptEntries.filter(e => e.text.toLowerCase().includes(searchVal) || e.speaker.toLowerCase().includes(searchVal));
+
+      filtered.forEach(entry => {
+        const initial = entry.speaker.charAt(0).toUpperCase();
+        htmlContent += `
+          <div class="transcript-card">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2">
+                <span class="speaker-avatar">${initial}</span>
+                <span class="transcript-speaker-name">${entry.speaker}</span>
+              </div>
+              <span class="transcript-time">${entry.time}</span>
+            </div>
+            <div class="transcript-text">${entry.text}</div>
+          </div>`;
+      });
+      
+      if (currentInterim && !searchVal) {
+        const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        const initial = activeSpeaker.charAt(0).toUpperCase();
+        htmlContent += `
+          <div class="transcript-card border-info">
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2">
+                <span class="speaker-avatar bg-info">${initial}</span>
+                <span class="transcript-speaker-name text-info">${activeSpeaker} <small class="fst-italic opacity-75">(berbicara...)</small></span>
+              </div>
+              <span class="transcript-time">${timeNow}</span>
+            </div>
+            <div class="transcript-text text-white-50">${currentInterim}</div>
+          </div>`;
+      }
+      
+      const box = document.getElementById('transcriptBox');
+      box.innerHTML = htmlContent || `<div class="text-center text-muted py-5"><i class="fas fa-search fs-3 d-block mb-2 opacity-25"></i>Tidak ada hasil percakapan.</div>`;
+      document.getElementById('entryCount').textContent = `${transcriptEntries.length} Entri`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function addManualEntry() {
+      const input = document.getElementById('manualInput');
+      const text = input.value.trim();
+      if (text) {
+        const timeNow = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        transcriptEntries.push({ speaker: activeSpeaker, time: timeNow, text: text });
+        input.value = '';
+        renderTranscriptBox();
+      }
+    }
+    function handleManualKey(e) { if(e.key==='Enter') addManualEntry(); }
+
+    // Action Items Management
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const text = input.value.trim();
+      if (text) {
+        actionItems.push(text);
+        input.value = '';
+        renderTasks();
+      }
+    }
+    function handleTaskKey(e) { if(e.key==='Enter') addTask(); }
+
+    function removeTask(index) {
+      actionItems.splice(index, 1);
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const list = document.getElementById('taskList');
+      document.getElementById('taskCount').textContent = `${actionItems.length} Tugas`;
+      if (actionItems.length === 0) {
+        list.innerHTML = `<div class="text-center text-muted fst-italic py-3" style="font-size: 0.8rem;">Belum ada action item.</div>`;
+        return;
+      }
+      list.innerHTML = '';
+      actionItems.forEach((task, i) => {
+        list.innerHTML += `
+          <div class="d-flex justify-content-between align-items-center bg-dark p-2 mb-1 rounded border border-secondary" style="font-size:0.85rem;">
+            <span><i class="fas fa-angle-right me-2 text-info"></i>${task}</span>
+            <i class="fas fa-trash text-danger opacity-75" style="cursor:pointer;" onclick="removeTask(${i})"></i>
+          </div>`;
+      });
+    }
+
+    function startRecording() {
+      if (!recognition) return alert('Gunakan Google Chrome!');
+      isRecording = true;
+      try {
+        recognition.start();
+        startTimer();
+        document.getElementById('btnStart').classList.add('d-none');
+        document.getElementById('btnStop').classList.remove('d-none');
+        document.getElementById('statusBadge').className = 'badge bg-danger rounded-pill px-2 py-1';
+        document.getElementById('statusBadge').innerHTML = '● Merekam';
+      } catch(e){}
+    }
+
+    function stopRecording() {
+      isRecording = false;
+      if (recognition) try { recognition.stop(); } catch(e){}
+      stopTimer();
+      document.getElementById('btnStop').classList.add('d-none');
+      document.getElementById('btnStart').classList.remove('d-none');
+      document.getElementById('statusBadge').className = 'badge bg-success rounded-pill px-2 py-1';
+      document.getElementById('statusBadge').innerHTML = '✓ Selesai';
+    }
+
+    function clearTranscript() {
+      if (confirm('Bersihkan seluruh data rapat saat ini?')) {
+        transcriptEntries = [];
+        actionItems = [];
+        currentInterim = '';
+        document.getElementById('timerDisplay').textContent = '00:00:00';
+        renderTranscriptBox();
+        renderTasks();
+      }
+    }
+
+    function copyTranscript() {
+      const text = transcriptEntries.map(e => `[${e.time}] ${e.speaker}: ${e.text}`).join('\n');
+      navigator.clipboard.writeText(text);
+      alert('Transkrip berhasil disalin ke clipboard!');
+    }
+
+    function exportToTxt() {
+      const text = transcriptEntries.map(e => `[${e.time}] ${e.speaker}: ${e.text}`).join('\n');
+      const blob = new Blob([text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'Transkrip_Rapat.txt';
+      a.click();
+    }
+
+    function exportToWord() {
+      const title = document.getElementById('meetingTitle').value || 'Notulensi Rapat';
+      const date = document.getElementById('meetingDate').value || '-';
+      const loc = document.getElementById('meetingLocation').value || '-';
+      const notes = document.getElementById('meetingNotes').value || '-';
+      
+      const transcriptHtml = transcriptEntries.map(e => `<p><strong>[${e.time}] ${e.speaker}:</strong> ${e.text}</p>`).join('');
+      const tasksHtml = actionItems.map(t => `<li>${t}</li>`).join('');
+
+      const content = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word'>
+        <body style="font-family:Arial; padding:20px;">
+          <h2>${title}</h2>
+          <p>Tanggal: ${date} | Lokasi: ${loc}</p>
+          <hr/>
+          <h3>Poin Keputusan / Ringkasan</h3>
+          <p>${notes}</p>
+          <h3>Action Items</h3>
+          <ul>${tasksHtml || '<li>-</li>'}</ul>
+          <h3>Transkrip Percakapan</h3>
+          ${transcriptHtml}
+        </body>
+        </html>`;
+
+      const blob = new Blob(['\ufeff' + content], { type: 'application/msword' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${title}.doc`;
+      a.click();
+    }
+
+    // Init
+    updateSpeakerButtons();
+  </script>
+</body>
+</html>
